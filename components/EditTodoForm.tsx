@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Pen } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { createTodoActions } from "@/actions/todo.actions";
+import { createTodoActions, updateTodoActions } from "@/actions/todo.actions";
 import {
   Form,
   FormControl,
@@ -30,17 +30,18 @@ import { z } from "zod";
 import { todoFormSchema } from "@/schema";
 import { Checkbox } from "@/components/ui/checkbox";
 import Spinner from "./spinner";
+import { ITodo } from "@/interfaces";
 
-const AddTodoForm = ({ userId }: { userId: string | "" }) => {
+const EditTodoForm = ({ todo }: { todo: ITodo }) => {
   const [loading, setLoading] = useState(false);
   const [Isclose, setIsclose] = useState(false);
 
   const form = useForm<z.infer<typeof todoFormSchema>>({
     resolver: zodResolver(todoFormSchema),
     defaultValues: {
-      title: "",
-      body: "",
-      completed: false,
+      title: todo.title,
+      body: todo.body || "",
+      completed: todo.completed,
     },
     mode: "onChange",
   });
@@ -49,11 +50,12 @@ const AddTodoForm = ({ userId }: { userId: string | "" }) => {
     values: z.infer<typeof todoFormSchema>
   ): Promise<void> => {
     setLoading(true);
-    await createTodoActions({
+    //
+    await updateTodoActions({
+      id: todo.id,
       title: values.title,
-      body: values.body,
+      body: values.body as string,
       completed: values.completed,
-      userId: userId || "",
     });
     setLoading(false);
     setIsclose(false);
@@ -64,13 +66,12 @@ const AddTodoForm = ({ userId }: { userId: string | "" }) => {
       <form>
         <DialogTrigger asChild>
           <Button className="flex  items-center justify-center">
-            <Plus className="mr-2" />
-            Add Todo
+            <Pen />
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Add Todo</DialogTitle>
+            <DialogTitle>Edit Todo</DialogTitle>
             <DialogDescription>
               Enter the title of the new todo item.
             </DialogDescription>
@@ -141,10 +142,10 @@ const AddTodoForm = ({ userId }: { userId: string | "" }) => {
                 <Button type="submit" disabled={loading}>
                   {loading ? (
                     <>
-                      <Spinner /> Saving{" "}
+                      <Spinner /> Edit Todo{" "}
                     </>
                   ) : (
-                    " Save ✅"
+                    " Edit Todo"
                   )}
                 </Button>
               </form>
@@ -159,4 +160,4 @@ const AddTodoForm = ({ userId }: { userId: string | "" }) => {
   );
 };
 
-export default AddTodoForm;
+export default EditTodoForm;

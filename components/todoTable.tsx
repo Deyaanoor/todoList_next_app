@@ -15,7 +15,7 @@ import TodosTableActions from "./TodosTableActions";
 export function TodoTable({ todos }: { todos: ITodo[] }) {
   return (
     <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
+      <TableCaption>A list of your ToDo </TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead>ID</TableHead>
@@ -26,26 +26,33 @@ export function TodoTable({ todos }: { todos: ITodo[] }) {
       </TableHeader>
       <TableBody>
         {todos.map((todo) => (
-          <TableRow key={todo.id}>
-            <TableCell className="font-medium">{todo.id}</TableCell>
-            <TableCell className="font-medium">{todo.title}</TableCell>
+          <TableRow key={todo?.id}>
+            <TableCell className="font-medium">{todo?.id}</TableCell>
+            <TableCell className="font-medium">{todo?.title}</TableCell>
 
             <TableCell>
-              {todo.completed ? (
-                <Badge>{todo.completed ? "Completed" : "Incompleted"}</Badge>
+              {todo?.completed ? (
+                <Badge>{todo?.completed ? "Completed" : "Incompleted"}</Badge>
               ) : (
                 <Badge variant={"destructive"}>
-                  {todo.completed ? "Completed" : "Incompleted"}
+                  {todo?.completed ? "Completed" : "Incompleted"}
                 </Badge>
               )}
             </TableCell>
             <TableCell>
-              <TodosTableActions id={todo.id} />
+              <TodosTableActions todo={todo} />
             </TableCell>
           </TableRow>
         ))}
       </TableBody>
-      <TableFooter></TableFooter>
+      <TableFooter>
+        <TableRow>
+          <TableCell colSpan={3} className="text-center"></TableCell>
+          <TableCell className="text-right">
+            {!todos.length ? "YOU DON'T HAVE ANY TODO YET" : todos.length}
+          </TableCell>
+        </TableRow>
+      </TableFooter>
     </Table>
   );
 }
