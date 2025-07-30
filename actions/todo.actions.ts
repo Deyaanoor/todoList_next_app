@@ -7,17 +7,21 @@ import { ITodo } from "@/interfaces";
 
 const prisma = new PrismaClient();
 
-export const getUserTodoListActions = async ({userId}:{userId:string  |null}) => {
-   //  throw new Error("getUserTodoListActions is not implemented yet");
-   return await prisma.todo.findMany({
-      where:{
-         user_id:userId as string ,
-      },
-         orderBy: {
-            createdAt: "desc",
-         },
-   })
+export const getUserTodoListActions = async ({ userId }: { userId: string | null }) => {
+  if (!userId) {
+    return []; 
+  }
+
+  return await prisma.todo.findMany({
+    where: {
+      user_id: userId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 };
+
 
 export const createTodoActions = async ({title,body,completed,userId}:{title:string ;body:string|undefined;completed:boolean;userId:string|null}) => {
    await prisma.todo.create({
